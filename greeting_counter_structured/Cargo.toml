@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 solana-program = "=1.18.5"
 borsh = "0.10.3"
+num-derive = "0.4" # for #[derive(FromPrimitive)]
+num-traits = "0.2" # FromPrimitive trait crate
 
 [lib]
 crate-type = ["cdylib", "lib"]

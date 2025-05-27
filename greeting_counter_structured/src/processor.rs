@@ -1,6 +1,5 @@
 use crate::{
-    instruction::GreetingCounterInstruction,
-    state::GreetingAccount,
+    error::GreetingError, instruction::GreetingCounterInstruction, state::GreetingAccount
 };
 use borsh::{BorshDeserialize, BorshSerialize};
 
@@ -55,7 +54,8 @@ impl Processor {
         // This is crucial to prevent unauthorized writes to accounts owned by other programs.
         if account.owner != program_id {
             msg!("Error: Greeting account not owned by program");
-            return Err(ProgramError::IncorrectProgramId);
+            // return Err(ProgramError::Custom(GreetingError::IncorrectOwner as u32)); magic .into() automatically converts the enum to a u32
+            return Err(GreetingError::IncorrectOwner.into());
         }
 
         // Deserialize account data into GreetingAccount struct
@@ -83,7 +83,7 @@ impl Processor {
         // Security check: Ensure this program owns the account.
         if account.owner != program_id {
             msg!("Error: Greeting account not owned by program");
-            return Err(ProgramError::IncorrectProgramId);
+            return Err(GreetingError::IncorrectOwner.into());
         }
 
         // Deserialize account data
