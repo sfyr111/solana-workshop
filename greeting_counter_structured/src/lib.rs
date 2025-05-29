@@ -6,3 +6,4 @@ pub mod error;
 
 pub use instruction::GreetingCounterInstruction;
 pub use state::GreetingAccount;
+pub use error::GreetingError;
