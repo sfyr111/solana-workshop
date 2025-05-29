@@ -2,3 +2,5 @@ node_modules
 .cursorrules
 .cursor/
 target/
+
+answer/

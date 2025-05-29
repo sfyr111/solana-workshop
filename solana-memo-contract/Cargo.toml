@@ -1,0 +1,17 @@
+[package]
+name = "solana-memo-contract"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+solana-program = "=1.18.5"
+borsh = "0.10.3"
+borsh-derive = "0.10.3"
+thiserror = "1.0.69"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+no-entrypoint = []
+
