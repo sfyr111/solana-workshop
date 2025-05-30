@@ -1,5 +1,8 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use solana_program::instruction::{AccountMeta, Instruction};
+use solana_program::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+};
 
 
 #[derive(Debug, BorshDeserialize, BorshSerialize)]
