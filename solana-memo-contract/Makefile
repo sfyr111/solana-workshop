@@ -1,6 +1,6 @@
 # Correct path for the compiled program .so file
 # Assumes your crate name in Cargo.toml is "solana_hello_world"
-PROGRAM_CRATE_NAME := solana-memo-contract
+PROGRAM_CRATE_NAME := solana_memo_contract
 PROGRAM_SO := target/sbf-solana-solana/release/$(PROGRAM_CRATE_NAME).so
 
 # Phony targets to prevent conflicts with files of the same name
