@@ -1,0 +1,94 @@
+{
+    "jsonrpc": "2.0",
+    "result": {
+      "blockTime": 1748715284,
+      "meta": {
+        "computeUnitsConsumed": 13645,
+        "err": null,
+        "fee": 5000,
+        "innerInstructions": [
+          {
+            "index": 0,
+            "instructions": [
+              {
+                "accounts": [
+                  "ZPYHzh9619DpKWPQCvzW1E1AgY8T15dBYCoKRJKYzJV"
+                ],
+                "data": "",
+                "programId": "7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh",
+                "stackHeight": 2
+              }
+            ]
+          }
+        ],
+        "logMessages": [
+          "Program 6V6Avvwk5ioT45USW9ziRJD6wSjNPPLYP2KkSnRmNnHH invoke [1]",
+          "Program log: CPI invoke program calling hello world from ZPYHzh9619DpKWPQCvzW1E1AgY8T15dBYCoKRJKYzJV",
+          "Program 7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh invoke [2]",
+          "Program log: Hello, world!",
+          "Program 7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh consumed 345 of 186884 compute units",
+          "Program 7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh success",
+          "Program log: CPI invoke program finished",
+          "Program 6V6Avvwk5ioT45USW9ziRJD6wSjNPPLYP2KkSnRmNnHH consumed 13645 of 200000 compute units",
+          "Program 6V6Avvwk5ioT45USW9ziRJD6wSjNPPLYP2KkSnRmNnHH success"
+        ],
+        "postBalances": [
+          1621461200,
+          1141440,
+          1141440
+        ],
+        "postTokenBalances": [],
+        "preBalances": [
+          1621466200,
+          1141440,
+          1141440
+        ],
+        "preTokenBalances": [],
+        "rewards": [],
+        "status": {
+          "Ok": null
+        }
+      },
+      "slot": 1265774,
+      "transaction": {
+        "message": {
+          "accountKeys": [
+            {
+              "pubkey": "ZPYHzh9619DpKWPQCvzW1E1AgY8T15dBYCoKRJKYzJV",
+              "signer": true,
+              "source": "transaction",
+              "writable": true
+            },
+            {
+              "pubkey": "6V6Avvwk5ioT45USW9ziRJD6wSjNPPLYP2KkSnRmNnHH",
+              "signer": false,
+              "source": "transaction",
+              "writable": false
+            },
+            {
+              "pubkey": "7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh",
+              "signer": false,
+              "source": "transaction",
+              "writable": false
+            }
+          ],
+          "instructions": [
+            {
+              "accounts": [
+                "ZPYHzh9619DpKWPQCvzW1E1AgY8T15dBYCoKRJKYzJV",
+                "7JL5oYxLowdhnd6fnDhD6tpXnBHZsPic6CbhRj4N2ZUh"
+              ],
+              "data": "",
+              "programId": "6V6Avvwk5ioT45USW9ziRJD6wSjNPPLYP2KkSnRmNnHH",
+              "stackHeight": null
+            }
+          ],
+          "recentBlockhash": "7Sexkrfy6Q86VWeifSGnxyMr4rY3kngR1G1VGJ5HBLWb"
+        },
+        "signatures": [
+          "3cesWqMKHDc7pgdkBojoxqoaZXmC2sKuKhayb69USkc8gcPcR8aERza3qr26sPCfyheSTFU3nP4F8MGsXnCbqGUH"
+        ]
+      }
+    },
+    "id": 1
+  }
