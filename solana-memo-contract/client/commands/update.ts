@@ -1,4 +1,4 @@
-import { PublicKey, sendAndConfirmRawTransaction, sendAndConfirmTransaction, Transaction, TransactionInstruction } from '@solana/web3.js';
+import { PublicKey, sendAndConfirmTransaction, Transaction, TransactionInstruction } from '@solana/web3.js';
 import { getConnection, loadAccountInfo, loadWallet, programId } from '../utils';
 import { createInstructionData, MemoInstruction } from '../memo';
 
