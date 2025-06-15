@@ -1,0 +1,17 @@
+[package]
+name = "solana-token-metadata"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+solana-program = "1.18.0"
+borsh = "0.10.3"
+borsh-derive = "0.10.3"
+thiserror = "1.0.69"
+spl-token = { version = "4.0", features = ["no-entrypoint"] }
+
+[lib]
+crate-type = ["cdylib", "lib"]
