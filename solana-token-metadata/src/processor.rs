@@ -20,11 +20,11 @@ impl Processor {
 
         match instruction {
             TokenMetadataInstruction::RegisterMetadata { name, symbol, icon, home } => {
-                Ok(())
+                Self::process_register_metadata(program_id, accounts, name, symbol, icon, home)
             }
 
             TokenMetadataInstruction::UpdateMetadata { name, symbol, icon, home } => {
-                Ok(())           
+                Self::process_update_metadata(program_id, accounts, name, symbol, icon, home)
             }
         }        
     }
@@ -111,16 +111,16 @@ impl Processor {
         home: String,
     ) -> ProgramResult {
         let account_info_iter = &mut accounts.iter();
-        let authority_info = next_account_info(account_info_iter);
-        let metadata_account_info = next_account_info(account_info_iter);
-        let mint_account_info = next_account_info(account_info_iter);
-        let spl_token_program_info = next_account_info(account_info_iter);
+        let authority_info = next_account_info(account_info_iter)?;
+        let metadata_account_info = next_account_info(account_info_iter)?;
+        let mint_account_info = next_account_info(account_info_iter)?;
+        let spl_token_program_info = next_account_info(account_info_iter)?;
     
         if !authority_info.is_signer {
             return Err(ProgramError::MissingRequiredSignature);
         }
     
-        let (expected_metadata_key, _) Pubkey::find_program_address(
+        let (expected_metadata_key, _) = Pubkey::find_program_address(
             &[
                 b"metadata",
                 spl_token_program_info.key.as_ref(),
@@ -135,6 +135,11 @@ impl Processor {
         }
     
         if metadata_account_info.owner != program_id {
+            return Err(ProgramError::IncorrectProgramId);
+        }
+
+    
+        let token_metadata = TokenMetadata {
             mint: *mint_account_info.key,
             name,
             symbol,
@@ -145,7 +150,7 @@ impl Processor {
         token_metadata.serialize(&mut *metadata_account_info.data.borrow_mut())?;
     
         msg!("Token metadata updated successfully");
-        Ok(());
+        Ok(())
     }
 }
 

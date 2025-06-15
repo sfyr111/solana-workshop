@@ -10,7 +10,7 @@ no-entrypoint = []
 solana-program = "1.18.0"
 borsh = "0.10.3"
 borsh-derive = "0.10.3"
-thiserror = "1.0.69"
+thiserror = "1.0.56"
 spl-token = { version = "4.0", features = ["no-entrypoint"] }
 
 [lib]

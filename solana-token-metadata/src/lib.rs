@@ -5,10 +5,12 @@ use solana_program::{
     pubkey::Pubkey,
 };
 
-pub mod processor;
 pub mod instruction;
+pub mod processor;
 pub mod state;
 
+// 定义程序入口点
+#[cfg(not(feature = "no-entrypoint"))]
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
