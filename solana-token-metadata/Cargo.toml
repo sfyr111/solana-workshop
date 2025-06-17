@@ -7,11 +7,11 @@ edition = "2021"
 no-entrypoint = []
 
 [dependencies]
-solana-program = "1.18.0"
+solana-program = "=1.18.5"
 borsh = "0.10.3"
 borsh-derive = "0.10.3"
-thiserror = "1.0.56"
-spl-token = { version = "4.0", features = ["no-entrypoint"] }
+thiserror = "1.0.69"
+spl-token = { version = "=3.5.0", features = ["no-entrypoint"] }
 
 [lib]
 crate-type = ["cdylib", "lib"]
