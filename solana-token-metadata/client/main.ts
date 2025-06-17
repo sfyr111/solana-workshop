@@ -8,8 +8,14 @@ import {
     SystemProgram,
     sendAndConfirmTransaction
 } from "@solana/web3.js";
-// Import SPL Token program ID for PDA derivation
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+// Import SPL Token utilities for real token creation and management
+import {
+    TOKEN_PROGRAM_ID,
+    createMint,
+    getOrCreateAssociatedTokenAccount,
+    mintTo,
+    getAccount
+} from "@solana/spl-token";
 // Import borsh for data serialization/deserialization
 import * as borsh from "borsh";
 // Import Node.js modules for file system operations
@@ -17,8 +23,9 @@ import fs from "fs";
 import path from "path";
 
 
-// Configuration constants
-const CLUSTER_URL = "http://127.0.0.1:8899";  // Local Solana test validator URL
+// Configuration constants - you can switch between local and devnet
+const USE_DEVNET = process.env.USE_DEVNET === 'true';  // Set USE_DEVNET=true to use devnet
+const CLUSTER_URL = USE_DEVNET ? "https://api.devnet.solana.com" : "http://127.0.0.1:8899";
 const PROGRAM_ID = "CpW3JJUyddDpwv4gLRYsgx4EeChfqC1pjn5czF9UQX59";  // Deployed token metadata program ID
 
 // Initialize connection to Solana cluster
@@ -189,6 +196,82 @@ function getMetadataPDA(mint: PublicKey): [PublicKey, number] {
 }
 
 /**
+ * Request airdrop if needed (for devnet)
+ *
+ * @returns Promise<void>
+ */
+async function ensureFunding(): Promise<void> {
+    if (USE_DEVNET) {
+        const balance = await connection.getBalance(payer.publicKey);
+        const requiredBalance = 2 * 1000000000; // 2 SOL in lamports
+
+        if (balance < requiredBalance) {
+            console.log("💰 Requesting airdrop for devnet...");
+            const signature = await connection.requestAirdrop(payer.publicKey, requiredBalance);
+            await connection.confirmTransaction(signature);
+            console.log("✅ Airdrop completed");
+        }
+    }
+}
+
+/**
+ * Create a real SPL token mint
+ *
+ * @returns Promise<PublicKey> - The mint address of the created token
+ */
+async function createRealToken(): Promise<PublicKey> {
+    console.log("🪙 Creating SPL token mint...");
+
+    const mint = await createMint(
+        connection,
+        payer,                    // Payer for the transaction
+        payer.publicKey,          // Mint authority (who can mint tokens)
+        payer.publicKey,          // Freeze authority (who can freeze accounts)
+        9                         // Number of decimals (9 is standard for most tokens)
+    );
+
+    console.log(`✅ Token mint created: ${mint.toBase58()}`);
+    return mint;
+}
+
+/**
+ * Create token account and mint some tokens to demonstrate real token functionality
+ *
+ * @param mint - The mint address of the token
+ * @returns Promise<void>
+ */
+async function mintTokensToAccount(mint: PublicKey): Promise<void> {
+    console.log("💳 Creating token account and minting tokens...");
+
+    // Create an associated token account for the payer
+    const tokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        payer,                    // Payer for the transaction
+        mint,                     // Token mint
+        payer.publicKey           // Owner of the token account
+    );
+
+    console.log(`✅ Token account created: ${tokenAccount.address.toBase58()}`);
+
+    // Mint 1000 tokens to the account
+    const mintAmount = 1000 * Math.pow(10, 9); // 1000 tokens with 9 decimals
+    await mintTo(
+        connection,
+        payer,                    // Payer for the transaction
+        mint,                     // Token mint
+        tokenAccount.address,     // Destination token account
+        payer,                    // Mint authority
+        mintAmount                // Amount to mint
+    );
+
+    console.log(`✅ Minted ${mintAmount / Math.pow(10, 9)} tokens to account`);
+
+    // Verify the balance to confirm minting worked
+    const accountInfo = await getAccount(connection, tokenAccount.address);
+    console.log(`✅ Token account balance: ${Number(accountInfo.amount) / Math.pow(10, 9)} tokens`);
+}
+
+/**
  * Registers new metadata for a token mint
  *
  * This function creates a new metadata account (PDA) for the specified token mint
@@ -346,60 +429,70 @@ async function readMetadata(mint: PublicKey): Promise<TokenMetadata | null> {
 }
 
 /**
- * Main demonstration function that showcases all token metadata operations
+ * Main demonstration function that showcases all token metadata operations with real SPL tokens
  *
  * This function demonstrates the complete workflow:
- * 1. Register new metadata for a token
- * 2. Read the registered metadata
- * 3. Update the metadata with new information
- * 4. Read the updated metadata to verify changes
+ * 1. Create a real SPL token mint
+ * 2. Create token accounts and mint tokens
+ * 3. Register metadata for the token
+ * 4. Read the registered metadata
+ * 5. Update the metadata with new information
+ * 6. Read the updated metadata to verify changes
  *
- * Note: This uses a mock mint address for demonstration purposes.
- * In a real application, you would use an actual SPL token mint address.
+ * This creates actual SPL tokens that can be used in the real Solana ecosystem.
  */
 async function main() {
     try {
-        console.log("=== Solana Token Metadata Client ===");
-        console.log(`Program ID: ${programId.toBase58()}`);
-        console.log(`Payer: ${payer.publicKey.toBase58()}`);
+        console.log("🚀 === Solana Token Metadata Client with Real SPL Tokens ===");
+        console.log(`🌐 Network: ${USE_DEVNET ? 'Devnet' : 'Local'}`);
+        console.log(`📋 Program ID: ${programId.toBase58()}`);
+        console.log(`👤 Payer: ${payer.publicKey.toBase58()}`);
 
-        // For demonstration, we'll create a mock mint address
-        // In a real scenario, you would use an actual SPL token mint
-        const mockMint = Keypair.generate().publicKey;
-        console.log(`\nUsing mock mint: ${mockMint.toBase58()}`);
+        // Step 1: Ensure funding (for devnet)
+        await ensureFunding();
 
-        // Step 1: Register metadata for the token
-        console.log("\n1. Registering metadata...");
+        // Step 2: Create a real SPL token mint
+        console.log("\n🪙 === Creating Real SPL Token ===");
+        const mint = await createRealToken();
+
+        // Step 3: Create token account and mint tokens to demonstrate real functionality
+        await mintTokensToAccount(mint);
+
+        // Step 4: Register metadata for the token
+        console.log("\n📝 === Registering Token Metadata ===");
         await registerMetadata(
-            mockMint,
-            "My Token",                          // Token name
-            "MTK",                               // Token symbol
-            "https://example.com/icon.png",      // Icon URL
-            "https://example.com"                // Homepage URL
+            mint,
+            "Awesome Demo Token",                        // Token name
+            "ADT",                                       // Token symbol
+            "https://example.com/awesome-token-icon.png", // Icon URL
+            "https://awesome-token.example.com"          // Homepage URL
         );
 
-        // Step 2: Read and display the registered metadata
-        console.log("\n2. Reading metadata...");
-        await readMetadata(mockMint);
+        // Step 5: Read and display the registered metadata
+        console.log("\n📖 === Reading Token Metadata ===");
+        await readMetadata(mint);
 
-        // Step 3: Update the metadata with new information
-        console.log("\n3. Updating metadata...");
+        // Step 6: Update the metadata with new information
+        console.log("\n🔄 === Updating Token Metadata ===");
         await updateMetadata(
-            mockMint,
-            "Updated Token",                     // New token name
-            "UTK",                               // New token symbol
-            "https://new.com/icon.png",          // New icon URL
-            "https://new.com"                    // New homepage URL
+            mint,
+            "Super Awesome Token",                       // New token name
+            "SAT",                                       // New token symbol
+            "https://new.com/super-awesome-icon.png",    // New icon URL
+            "https://super-awesome.example.com"          // New homepage URL
         );
 
-        // Step 4: Read and display the updated metadata
-        console.log("\n4. Reading updated metadata...");
-        await readMetadata(mockMint);
+        // Step 7: Read and display the updated metadata
+        console.log("\n📖 === Reading Updated Metadata ===");
+        await readMetadata(mint);
 
-        console.log("\n=== Demo completed successfully! ===");
+        console.log("\n🎉 === Demo completed successfully! ===");
+        console.log(`\n💡 Your real SPL token mint address: ${mint.toBase58()}`);
+        console.log("💡 You can use this mint address to interact with your token in wallets and dApps!");
+        console.log(`💡 Network: ${USE_DEVNET ? 'Devnet' : 'Local testnet'}`);
 
     } catch (error) {
-        console.error("Error in main:", error);
+        console.error("❌ Error in main:", error);
     }
 }
 
