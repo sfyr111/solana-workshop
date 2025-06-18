@@ -1,0 +1,29 @@
+{
+  "name": "solana-alt-tutorial-client",
+  "version": "1.0.0",
+  "description": "Address Lookup Tables (ALT) Tutorial Client for Solana",
+  "main": "main.ts",
+  "scripts": {
+    "start": "ts-node main.ts",
+    "demo:basic": "ts-node main.ts basic",
+    "demo:alt": "ts-node main.ts alt",
+    "demo:compare": "ts-node main.ts compare",
+    "test": "ts-node main.ts basic"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@solana/spl-token": "^0.3.8",
+    "@solana/web3.js": "^1.78.0",
+    "bn.js": "^5.2.2",
+    "borsh": "^0.7.0",
+    "bs58": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
