@@ -1,0 +1,30 @@
+{
+  "name": "alt-optimized-demo",
+  "version": "1.0.0",
+  "description": "Optimized Address Lookup Table (ALT) Demo for Solana",
+  "main": "dist/alt-demo.js",
+  "scripts": {
+    "start": "ts-node alt-demo.ts",
+    "build": "tsc",
+    "dev": "ts-node --watch alt-demo.ts"
+  },
+  "keywords": [
+    "solana",
+    "alt",
+    "address-lookup-table",
+    "versioned-transaction",
+    "spl-token"
+  ],
+  "dependencies": {
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.10.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
